@@ -1,13 +1,20 @@
+# Services supported Cricket Score, Youtube download, Temp of cities, Random pic, CPUVitals, Date, Time
+
 from datetime import datetime,date
+from snap import Snap
+from PCVitals import PCVitals
+import importlib
 import json 
 import requests
 import time
 import urllib
+#from token import *
 
-TOKEN = "" #Token goes here
+TOKEN=""
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 now=datetime.now()  #Time Object
-
+webcam=Snap()       #Cam Object
+pcvital=PCVitals()  #Check PC Vitals
 
 def get_url(url):   #second call
     response = requests.get(url)
@@ -49,19 +56,67 @@ def get_last_chat_id_and_text(updates):   #third call
 
 
 def send_message(text, chat_id):  #fourth call
-    text=urllib.parse.quote_plus(text)
-    if text.lower()=="hi":
-       text="Hello, How are you?"
-    elif text.lower()=="bitch":
-       text="Same to you!!"
-    elif text.lower()=="fuck\\you":
-    	text="I am not sure if I am meant to do that!"
-    elif text.lower()=="time":
-    	text = now.strftime("%H:%M:%S")
-    elif text.lower()=="date":
-    	text=date.today()
+    #text=urllib.parse.quote(text)
+    if text.lower()=="/start":
+       text="Hi, I am a bot who can do a bunch of services including \n 1. Date(IST) \n 2. Time(IST) \n 3. Cricket-Score \n 4. CPUVitals \n 5. ENVitals \n 6. YouTube-Download \n 7. Pic \n 8. Cam \nOr you know what, You canhit me up with the serial number or the first three letters of the service"        
+    elif text.lower()=="date" or text.lower()=='1' or text.lower()=="dat":
+       text=date.today()
+
+    elif text.lower()=="time" or text.lower()=='2' or text.lower()=="tim":
+       text = now.strftime("%H:%M:%S")
+
+    elif text.lower()=="cricket-score" or text.lower()=="3" or text.lower()=="cri":
+        print("hello")
+        # logic for cricket
+
+    elif text.lower()=="cpuvitals" or text.lower()=="4" or text.lower()=="cpu":
+        
+        text="Hmmm.. I see you are interested in me but I do have some subcategories. \n 41. Sensors \n 42. Process \n 43. Network \n 44. CPU \n 45. Usage"
+        url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
+        
+        
+        if text.lower()=="sensors" or text.lower()=="41":
+            se=pcvital.sensors()
+            text=se
+
+        elif text.lower()=="process" or text.lower()=="42":
+            pr=pcvital.process()
+            text=pr
+
+
+        elif text.lower()=="network" or text.lower()=="43":
+            ne=pcvital.network()
+            text=ne
+
+
+        elif text.lower()=="cpu" or text.lower()=="44":
+            cp=pcvital.cpu()
+            text=cp
+
+
+        elif text.lower()=="usage" or text.lower()=="45":
+            us=pcvital.usage()
+            text=us
+
+
+    elif text.lower()=="envitals" or text.lower()=="5" or text.lower()=="env":
+        print("hello")
+        # logic to be implemented
+
+    elif text.lower()=="youtube-download" or text.lower()=="6" or text.lower()=="you":
+        print("hello")
+        # logic to be implemented
+
+    elif text.lower()=="pic" or text.lower()=="7":
+        print("hello")
+        # logic to be implemented
+
+    elif text.lower()=="cam" or text.lower()=="8":
+        webcam.clickImg()
+
     else:
-    	text="I am not sure what it is!"
+       text="I am not sure what it is!"
+
     url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
     get_url(url)
     
@@ -74,6 +129,14 @@ def echo_all(updates):
             send_message(text, chat)
         except Exception as e:
             print(e)
+
+
+def build_keyboard(items):
+    keyboard = [[item] for item in items]
+    reply_markup = {"keyboard":keyboard, "one_time_keyboard": True}
+    return json.dumps(reply_markup)
+
+
 
 def main():
     last_update_id = None
