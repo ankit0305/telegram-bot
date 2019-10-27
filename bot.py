@@ -3,6 +3,9 @@
 from datetime import datetime,date
 from snap import Snap
 from PCVitals import PCVitals
+from TempCity import TempCity
+from pic import Pic
+from cricket import Cricket
 import importlib
 import json 
 import requests
@@ -15,6 +18,9 @@ URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 now=datetime.now()  #Time Object
 webcam=Snap()       #Cam Object
 pcvital=PCVitals()  #Check PC Vitals
+temp=TempCity()
+pic=Pic()
+cri=Cricket()         #Temperature object
 
 def get_url(url):   #second call
     response = requests.get(url)
@@ -66,50 +72,55 @@ def send_message(text, chat_id):  #fourth call
        text = now.strftime("%H:%M:%S")
 
     elif text.lower()=="cricket-score" or text.lower()=="3" or text.lower()=="cri":
-        print("hello")
-        # logic for cricket
+       text=cri.match()
+       print(text)
 
     elif text.lower()=="cpuvitals" or text.lower()=="4" or text.lower()=="cpu":
+
+        text=pcvital.sensors()
+        #print(se)
         
-        text="Hmmm.. I see you are interested in me but I do have some subcategories. \n 41. Sensors \n 42. Process \n 43. Network \n 44. CPU \n 45. Usage"
-        url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
         
+        # text="Hmmm.. I see you are interested in me but I do have some subcategories. \n 41. Sensors \n 42. Process \n 43. Network \n 44. CPU \n 45. Usage"
+        # url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
+
         
-        if text.lower()=="sensors" or text.lower()=="41":
-            se=pcvital.sensors()
-            text=se
+        # if text.lower()=="sensors" or text.lower()=="41":
+        #     se=pcvital.sensors()
+        #     text=se
 
-        elif text.lower()=="process" or text.lower()=="42":
-            pr=pcvital.process()
-            text=pr
-
-
-        elif text.lower()=="network" or text.lower()=="43":
-            ne=pcvital.network()
-            text=ne
+        # elif text.lower()=="process" or text.lower()=="42":
+        #     pr=pcvital.process()
+        #     text=pr
 
 
-        elif text.lower()=="cpu" or text.lower()=="44":
-            cp=pcvital.cpu()
-            text=cp
+        # elif text.lower()=="network" or text.lower()=="43":
+        #     ne=pcvital.network()
+        #     text=ne
 
 
-        elif text.lower()=="usage" or text.lower()=="45":
-            us=pcvital.usage()
-            text=us
+        # elif text.lower()=="cpu" or text.lower()=="44":
+        #     cp=pcvital.cpu()
+        #     text=cp
+
+
+        # elif text.lower()=="usage" or text.lower()=="45":
+        #     us=pcvital.usage()
+        #     text=us
 
 
     elif text.lower()=="envitals" or text.lower()=="5" or text.lower()=="env":
-        print("hello")
-        # logic to be implemented
+        text=temp.temp()
+        
+        
 
     elif text.lower()=="youtube-download" or text.lower()=="6" or text.lower()=="you":
-        print("hello")
+        text="I am yet to be implemented"
         # logic to be implemented
 
     elif text.lower()=="pic" or text.lower()=="7":
-        print("hello")
-        # logic to be implemented
+        text=pic.dogpic()
+        
 
     elif text.lower()=="cam" or text.lower()=="8":
         webcam.clickImg()
@@ -131,10 +142,10 @@ def echo_all(updates):
             print(e)
 
 
-def build_keyboard(items):
-    keyboard = [[item] for item in items]
-    reply_markup = {"keyboard":keyboard, "one_time_keyboard": True}
-    return json.dumps(reply_markup)
+# def build_keyboard(items):
+#     keyboard = [[item] for item in items]
+#     reply_markup = {"keyboard":keyboard, "one_time_keyboard": True}
+#     return json.dumps(reply_markup)
 
 
 

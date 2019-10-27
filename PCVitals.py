@@ -5,7 +5,7 @@ class PCVitals:
 		a=psutil.sensors_temperatures()
 		b=psutil.sensors_fans()
 		c=psutil.sensors_battery()
-		return a+b+c
+		return a
 
 	def process(self):
 		psutil.Process(129)
